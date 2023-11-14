@@ -52,7 +52,7 @@ wait_for_fastboot() {
   echo -n "waiting for fastboot...";
   export FLASH_WAITING_FOR_DEVICE=1
   for ((i=$TIMEOUT; i>0; i--)) {
-    if [[ ! -z "$(${FASTBOOT} -i 0x1f3a $@ devices)" ]]; then
+    if [[ ! -z "$(${FASTBOOT} $@ devices)" ]]; then
       echo "OK";
       unset FLASH_WAITING_FOR_DEVICE
       return 0;
@@ -227,8 +227,8 @@ flash_images() {
 
   export FLASH_VID_PID=1f3a1010
   if wait_for_fastboot; then
-    ${FASTBOOT} -i 0x1f3a -u flash UBI $IMAGESDIR/chip-$nand_erasesize-$nand_writesize-$nand_oobsize.ubi.sparse || RC=1
-    ${FASTBOOT} -i 0x1f3a continue > /dev/null
+    ${FASTBOOT} flash UBI $IMAGESDIR/chip-$nand_erasesize-$nand_writesize-$nand_oobsize.ubi.sparse || RC=1
+    ${FASTBOOT} continue > /dev/null
   else
     echo "failed to flash the UBI image"
     RC=1
@@ -237,24 +237,6 @@ flash_images() {
   rm -rf $tmpdir
 
   return $RC
-}
-
-#------------------------------------------------------------
-wait_for_linuxboot() {
-  local TIMEOUT=100
-  echo -n "flashing...";
-  for ((i=$TIMEOUT; i>0; i--)) {
-    if lsusb |grep -q "0525:a4a7" ||
-       lsusb |grep -q "0525:a4aa"; then
-      echo "OK"
-      return 0;
-    fi
-    echo -n ".";
-    sleep 3
-  }
-
-  echo "TIMEOUT";
-  return 1
 }
 
 #------------------------------------------------------------

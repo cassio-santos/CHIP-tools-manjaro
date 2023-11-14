@@ -145,7 +145,6 @@ function dl_probe {
   else
     case $FORMAT in
       "Hynix_8G_MLC")
-        echo hello
         export nand_erasesize=400000
         export nand_oobsize=680
         export nand_writesize=4000
@@ -156,7 +155,6 @@ function dl_probe {
         export nand_writesize=4000
       ;;
       "Toshiba_512M_SLC")
-        echo correct
         export nand_erasesize=40000
         export nand_oobsize=100
         export nand_writesize=1000
@@ -194,7 +192,7 @@ function dl_probe {
 
 echo == preparing images ==
 require_directory "$IMAGESDIR"
-rm -rf ${IMAGESDIR}
+#rm -rf ${IMAGESDIR}
 require_directory "$DL_DIR"
 
 ##pass
@@ -210,7 +208,7 @@ dl_probe || (
   exit 1
 )
 
-##pass
+###pass
 flash_images && ready_to_roll || (
   ##fail
   echo -e "\n FLASH VERIFICATION FAILED.\n\n"
